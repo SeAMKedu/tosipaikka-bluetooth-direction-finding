@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/676430940.svg)](https://zenodo.org/badge/latestdoi/676430940)
+
 ![logot](/images/tosipaikka_logot.png)
 
 # Tosipaikka - Bluetooth Direction Finding

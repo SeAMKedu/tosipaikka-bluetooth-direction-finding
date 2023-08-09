@@ -15,6 +15,7 @@ Sovellus laskee vastaanottamiensa saapumiskulmien ja laajennetun Kalman suotimen
 Laskettu sijainti muunnetaan WGS84-järjestelmän pituus- ja leveysasteiksi, jotta tunnisteen sijainti voidaan näyttää ulkoisessa karttasovelluksessa. Paikkatiedon lähetys sovellukselta karttasovellukselle tapahtuu erillisen MQTT-palvelimen kautta (kuvio 1).
 
 ![toimintakaavio](/images/toimintakaavio.png)
+
 **Kuvio 1.** Toimintakaavio.
 
 Huomatus: EVK-ODIN-W262-piirikortit ja tietokone, jolla sovellusta ajetaan, tulee olla samassa langattomassa WLAN-verkossa.
@@ -24,6 +25,7 @@ Kattasovelluksena voidaan käyttää esimerkiksi Tosipaikka-hankkeessa aiemmin t
 ## Laitteisto
 
 ![u-blox XPLR-AOA-2](/images/laitteisto.jpg)
+
 **Kuva 1.** Kehityssarjan Bluetooth-tunnisteet ja antennilevyt, joiden taakse on liitetty EVK-ODIN-W262-piirikortti.
 
 Laitteisto koostuu [u-blox XPLR-AOA-2](https://www.u-blox.com/en/product/xplr-aoa-2-kit) -kehityssarjasta, joka sisältää neljä antennilevyä (C211) ja neljä Bluetooth-tunnistetta (C209). Jokaisen antennilevyn taakse on lisäksi liitetty [u-blox EVK-ODIN-W262](https://www.u-blox.com/en/product/evk-odin-w2) -piirikortti, joka mahdollistaa saapumiskulmien mittausdatan langattoman tiedonsiirron antennilevyltä sovellukselle WiFi-verkon välityksellä.
@@ -35,6 +37,7 @@ u-blox XPLR-AOA-2 -kehityssarjan Bluetooth-tunniste lähettää signaalia valitu
 Antennilevyissä on asetettu viisi antennia kallellaan olevan L-kirjaimen muotoon. Kun antennilevy vastaanottaa Bluetooth-tunnisteen lähettämän signaalin, antennilevyssä oleva laiteohjelmisto laskee vaihe-eron kunkin antennin välillä määrittääkseen tunnisteen suunnan suhteessa antennilevyyn. Suunta ilmaistaan kahdella saapumiskulmalla: atsimuuttikulmalla *φ* ja korotuskulmalla *θ* (kuvio 2).
 
 ![saapumiskulmat](/images/saapumiskulmat.png)
+
 **Kuvio 2.** Saapumiskulmat.
 
 Atsimuuttikulma (-90°..+90°) on antennilevyn ja tunnisteen välinen suuntakulma vaakatasossa. Atsimuuttikulma on negatiivinen, kun tunniste on antennista katsottuna vasemmalla puolella ja positiivinen, kun tunniste on oikealla puolella (kuvio 3).
@@ -42,6 +45,7 @@ Atsimuuttikulma (-90°..+90°) on antennilevyn ja tunnisteen välinen suuntakulm
 Korotuskulma (-90°..+90°) on antennilevyn ja tunnisteen välinen suuntakulma pystysuunnassa. Korotuskulma on positiivinen, kun tunniste on antennista katsottuna yläpuolella ja negatiivinen, kun tunniste on alapuolella (kuvio 3).
 
 ![etumerkit](/images/etumerkit.png)
+
 **Kuvio 3.** Saapumiskulmien etumerkit.
 
 ## +UUDF-viesti
@@ -77,6 +81,7 @@ Alla on esimerkki +UUDF-viestistä.
 Laajennettu kalman suodin laskee Bluetooth-tunnisteen sijainnin neljän atsimuuttikulman ja neljän korotuskulman avulla (kuvio 4).
 
 ![sijainti](/images/tunnisteen_sijainti.png)
+
 **Kuvio 4.** Saapumiskulmat ja tunnisteen sijainti.
 
 Laskuissa on kuitenkin otettava huomioon antennilevyjen asettelu suhteessa sisätilapaikannusjärjestelmän koordinaatistoon.
@@ -93,6 +98,7 @@ jossa
 Kuviossa 5 on esimerkki tapauksesta, jossa antennilevyn atsimuuttikulma positiivisen x-akselin suhteen on +45° ja mitattu atsimuuttikulma on -10°. Kalman suodin käyttää laskuissaan täten atsimuuttikulmaa -45°-(-10) = +55°.
 
 ![atsimuuttikulma](/images/atsimuuttikulma.png)
+
 **Kuvio 5.** Atsimuuttikulma.
 
 Laskuissa käytettävä korotuskulma saadaan puolestaan yhtälöstä:
@@ -107,6 +113,7 @@ jossa
 Kuviossa 6 on esimerkki tapauksesta, jossa antennilevyn korotuskulma xy-tason suhteen on -10° ja mitattu korotuskulma on -10°. Kalman suodin käyttää laskuissaan täten korotuskulmaa -10°+(-10°) = -20°.
 
 ![korotuskulma](images/korotuskulma.png)
+
 **Kuvio 6.** Korotuskulma.
 
 ## Kalman suodin
@@ -116,21 +123,25 @@ Kalman suotimessa käytetään mallia, jossa nopeus oletetaan vakioksi. Tila *x*
 Tunnisteen sijainti suhteessa antennilevyyn ilmaistaan pallokoordinaatistossa etäisyyden *r*, atsimuuttikulman *φ*, ja korotuskulman *θ* avulla. Karteesiset koordinaatit x, y, ja z muunnetaan pallokoordinaatteihin kuvion 7 mukaisesti.
 
 ![pallokoordinaatit](images/pallokoordinaatit.png)
+
 **Kuvio 7.** Pallokoordinaatit.
 
 Kulmien yhtälöt ovat arkustangentin takia epälineaarisia, joten tunnisteen sijainnin laskemiseen on käytettävä laajennettua Kalman suodinta. Linearisointi tapahtuu osittaisderivaatan avulla (kuviot 8-10).
 
 ![matriisi_h](images/matriisi_h.png)
+
 **Kuvio 8.** Matriisi H.
 
 missä
 
 ![h1i_ja_h2i](images/h1i_ja_h2i.png)
+
 **Kuvio 9.** h_1i(x) ja h_2i(x).
 
 ja
 
 ![h_osittaisderivaatat](images/h_osittaisderivaatat.png)
+
 **Kuvio 10.** Osittaisderivaatat.
 
 ## u-blox EVK-ODIN-W262 -piirikortin konfigurointi
@@ -181,6 +192,7 @@ UDP-palvelinpistokkeen IP-osoite asetetaan EVK-ODIN-W262-piirikorttiin seuraavas
 * Mittaa tai laske jokaisen antennilevyn atsimuuttikulma suhteessa antennttilevyjen muodostaman alueen positiiviseen x-akseliin ja korotuskulma suhteessa alueen xy-tasoon (kuvio 11).
 
 ![asettelu](/images/antennilevyjen_asettelu.png)
+
 **Kuvio 11.** Antennilevyjen asettelu.
 
 * Kirjoita antennilevyjen koordinaatit ja kulmien arvot [config.py](/config.py) tiedostoon.
@@ -195,6 +207,9 @@ Käynnistä sovellus komennolla:
 ```
 python app.py
 ```
+
+Vinkki: Toisinaan käy niin, että kun sovellus sammutetaan ja käynnistetään uudestaan, joltain antennilevyltä ei tule enää mittausdataa. Tämä ongelma ratkeaa käyttämällä antennilevyä hetken aikaa virrattomana.
+
 ## Tekijätiedot
 
 Hannu Hakalahti, Asiantuntija TKI, Seinäjoen ammattikorkeakoulu
